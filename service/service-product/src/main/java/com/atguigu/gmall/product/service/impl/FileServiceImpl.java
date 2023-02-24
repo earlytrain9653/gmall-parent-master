@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
-public class FileServiceImpl  implements FileService {
+public class FileServiceImpl implements FileService {
 
 //    //从配置文件中获取参数
 //    @Value("${app.minio.endpoint}")
@@ -30,12 +30,13 @@ public class FileServiceImpl  implements FileService {
     @Autowired
     MinioProperties minioProperties;
 
-//    //优化4：封装获取Minion的方法
+    //    //优化4：封装获取Minion的方法
     @Autowired
     MinioClient client;
 
     /**
-     *  上传文件返回访问地址
+     * 上传文件返回访问地址
+     *
      * @param file
      * @return
      * @throws Exception
@@ -62,13 +63,13 @@ public class FileServiceImpl  implements FileService {
         //优化1：为每个文件加上唯一前缀 防止同名文件覆盖
         //优化2：以当天时间作为文件夹进行组织
         String date = DateUtil.formatDate(new Date());
-        String filename = date + "/" + UUID.randomUUID().toString() +"_" + file.getOriginalFilename();
+        String filename = date + "/" + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
         InputStream stream = file.getInputStream();
-        PutObjectOptions options = new PutObjectOptions(file.getSize(),-1L);
+        PutObjectOptions options = new PutObjectOptions(file.getSize(), -1L);
         options.setContentType(file.getContentType());
 
         //上传文件
-        client.putObject(minioProperties.getBucketName(),filename,stream,options);
+        client.putObject(minioProperties.getBucketName(), filename, stream, options);
 
         //返回文件的访问地址
         String url = minioProperties.getEndpoint() + "/" + minioProperties.getBucketName() + "/" + filename;

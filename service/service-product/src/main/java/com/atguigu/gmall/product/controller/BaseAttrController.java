@@ -22,6 +22,7 @@ import java.util.List;
     平台属性
  */
 
+@Api(tags = "平台属性管理")
 @RestController
 @RequestMapping("/admin/product")
 public class BaseAttrController {
@@ -36,7 +37,7 @@ public class BaseAttrController {
     @GetMapping("/attrInfoList/{category1Id}/{category2Id}/{category3Id}")
     public Result getBaseAttr(@PathVariable("category1Id") Long category1Id,
                               @PathVariable("category2Id") Long category2Id,
-                              @PathVariable("category3Id") Long category3Id){
+                              @PathVariable("category3Id") Long category3Id) {
 
         List<BaseAttrInfo> attrInfos = baseAttrInfoService.getBaseAttrAndValue(category1Id,
                 category2Id, category3Id);
@@ -46,16 +47,17 @@ public class BaseAttrController {
 
     /**
      * 保存或者修改属性
+     *
      * @param baseAttrInfo
      * @return
      */
     @PostMapping("/saveAttrInfo")
-    public Result saveAttrInfo(@RequestBody BaseAttrInfo baseAttrInfo){
+    public Result saveAttrInfo(@RequestBody BaseAttrInfo baseAttrInfo) {
         //判断是保存操作还是修改操作
-        if (baseAttrInfo.getId() != null){
+        if (baseAttrInfo.getId() != null) {
             //说明这是修改操作
             baseAttrInfoService.updateAttrInfo(baseAttrInfo);
-        }else{
+        } else {
             //说明是保存操作
             //保存AttrInfo
             baseAttrInfoService.saveAttrInfo(baseAttrInfo);
@@ -64,8 +66,14 @@ public class BaseAttrController {
     }
 
 
-    @GetMapping("/getAttrValueList/{attrId}")
-    public Result getBaseAttrInfo(@PathVariable("attrId") Long attrId){
+    /**
+     * 根据属性名id查询属性值
+     *
+     * @param attrId
+     * @return
+     */
+    @GetMapping("/getAttrVaLlueist/{attrId}")
+    public Result getBaseAttrInfo(@PathVariable("attrId") Long attrId) {
         List<BaseAttrValue> baseAttrValues = baseAttrValueService.getAttrValueLitByAttrId(attrId);
         return Result.ok(baseAttrValues);
     }

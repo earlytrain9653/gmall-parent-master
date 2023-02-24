@@ -21,11 +21,13 @@ public class BaseTrademarkController {
 
     /**
      * 分页获取所有品牌信息
+     *
      * @return
      */
     @GetMapping("/baseTrademark/{pn}/{ps}")
-    public Result getBaseSaleAttr(@PathVariable("pn") Long pn,@PathVariable("ps") Long ps){
-        Page page = new Page(pn,ps);
+    public Result getBaseSaleAttr(@PathVariable("pn") Long pn, @PathVariable("ps") Long ps) {
+
+        Page page = new Page(pn, ps);
 
         //分页信息 及 查询结果
         Page result = baseTrademarkService.page(page);
@@ -35,45 +37,49 @@ public class BaseTrademarkController {
 
     /**
      * 添加品牌
+     *
      * @return
      */
     @ApiOperation("保存品牌")
     @PostMapping("/baseTrademark/save")
-    public Result saveBaseTrademark(@RequestBody BaseTrademark baseTrademark){
+    public Result saveBaseTrademark(@RequestBody BaseTrademark baseTrademark) {
         baseTrademarkService.save(baseTrademark);
         return Result.ok();
     }
 
     /**
      * 根据id删除商品
+     *
      * @param id
      * @return
      */
     @ApiOperation("删除品牌")
     @DeleteMapping("/baseTrademark/remove/{id}")
-    public Result deleteBaseTrademark(@PathVariable("id") Long id){
+    public Result deleteBaseTrademark(@PathVariable("id") Long id) {
         boolean b = baseTrademarkService.removeById(id);
         return Result.ok();
     }
 
     /**
      * 根据id获取品牌 (用于修改时数据回显)
+     *
      * @return
      */
     @ApiOperation("根据id获取品牌")
     @GetMapping("/baseTrademark/get/{id}")
-    public Result getTrademarkById(@PathVariable("id") Long id){
+    public Result getTrademarkById(@PathVariable("id") Long id) {
         BaseTrademark baseTrademark = baseTrademarkService.getById(id);
         return Result.ok(baseTrademark);
     }
 
     /**
      * 修改品牌
+     *
      * @param baseTrademark
      * @return
      */
     @PutMapping("/baseTrademark/update")
-    public Result updateTrademark(@RequestBody BaseTrademark baseTrademark){
+    public Result updateTrademark(@RequestBody BaseTrademark baseTrademark) {
         boolean b = baseTrademarkService.updateById(baseTrademark);
         return Result.ok();
     }

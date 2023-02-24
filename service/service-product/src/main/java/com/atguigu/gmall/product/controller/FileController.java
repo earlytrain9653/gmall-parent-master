@@ -19,36 +19,34 @@ public class FileController {
 
     /**
      * 文件上传:
-     *   多部件上传
-     *   web开发
-     *      请求
-     *          请求首行（请求方式  请求协议  请求地址）
-     *              @PathVarable：请求首行工作 获取路径位置参数
-     *              @RequestParam：查询字符串或请求体
-     *          请求头
-     *              @RequestHeader:获取请求头
-     *              @CookieValue:获取kookie的 值
-     *          请求体
-     *               @RequestBody获取请求体的所有参数
-     *               @RequestPart：获取请求体的文件项
-     *      响应
-     *          响应首行（响应状态码）
-     *          响应头
-     *          响应体
-     *  完整的请求地址：
-     *      http://api.gmall.com:80/admin/prduct/xxx?key=value
-     *     协议://主机:端口/路径？查询字符串   @PathVarable：请求首行工作 获取路径位置参数
-     *     请求体中带参数
+     * 多部件上传
+     * web开发
+     * 请求
+     * 请求首行（请求方式  请求协议  请求地址）
      *
-     *   @RequestParam
-     *   @RequestPart：
-     *   @RequestBody:
-     *   @PathVarable
      * @return
+     * @PathVarable：请求首行工作 获取路径位置参数
+     * @RequestParam：查询字符串或请求体 请求头
+     * @RequestHeader:获取请求头
+     * @CookieValue:获取cookie的 值
+     * 请求体
+     * @RequestBody获取请求体的所有参数
+     * @RequestPart：获取请求体的文件项 响应
+     * 响应首行（响应状态码）
+     * 响应头
+     * 响应体
+     * 完整的请求地址：
+     * http://api.gmall.com:80/admin/prduct/xxx?key=value
+     * 协议://主机:端口/路径？查询字符串   @PathVarable：请求首行工作 获取路径位置参数
+     * 请求体中带参数
+     * @RequestParam
+     * @RequestPart：
+     * @RequestBody:
+     * @PathVarable
      */
     @PostMapping("/fileUpload")
-    public Result fileUpload(@RequestPart("file")MultipartFile file){
-        log.info("文件上传：文件大小：{}",file.getSize());
+    public Result fileUpload(@RequestPart("file") MultipartFile file) {
+        log.info("文件上传：文件大小：{}", file.getSize());
         String url = null;
         try {
             url = fileService.upload(file);
@@ -57,5 +55,4 @@ public class FileController {
         }
         return Result.ok(url);
     }
-
 }

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class MybatisPlusConfig {
 
     /**
+     * 分页配置
      * mybatisPlus的总拦截器
      * @return
      */
@@ -24,6 +25,7 @@ public class MybatisPlusConfig {
 
         //是否对页码溢出后进行处理
         innerInterceptor.setOverflow(true);
+        //将分页拦截器加入总拦截器
         interceptor.addInnerInterceptor(innerInterceptor);
         //interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         return interceptor;

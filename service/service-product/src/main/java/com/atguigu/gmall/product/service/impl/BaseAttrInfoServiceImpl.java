@@ -76,7 +76,7 @@ public class BaseAttrInfoServiceImpl extends ServiceImpl<BaseAttrInfoMapper, Bas
      */
     @Override
     public void updateAttrInfo(BaseAttrInfo baseAttrInfo) {
-        // 修改属性表 base_attr_info (用户有可能会修改value的属性)
+        // 修改属性名表 base_attr_info (用户有可能会修改value的属性)
         updateById(baseAttrInfo);
         List<BaseAttrValue> attrValueList = baseAttrInfo.getAttrValueList();
         Long attrId = baseAttrInfo.getId();  //获取attr_id 用于新增回填attr_id
@@ -134,8 +134,6 @@ public class BaseAttrInfoServiceImpl extends ServiceImpl<BaseAttrInfoMapper, Bas
             }
         }
     }
-
-
 }
 
 
