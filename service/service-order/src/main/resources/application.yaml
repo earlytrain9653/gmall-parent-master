@@ -1,0 +1,31 @@
+server:
+  port: 13000
+
+spring:
+  main:
+    allow-bean-definition-overriding: true  #允许Bean定义信息重写
+
+  datasource:
+    url: jdbc:mysql://192.168.10.129:3306/gmall_order?useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+
+  profiles:
+    include: sharding
+
+#  rabbitmq:
+#    host: 192.168.10.129
+#    port: 5672
+#    username: admin
+#    password: admin
+#    publisher-confirm-type: correlated  #开启发送端确认模式
+#    publisher-returns: true  #开启发送端返回功能
+#    listener:
+#      simple:
+#        acknowledge-mode: manual  #消费端要手动ack
+#        prefetch: 15
+
+
+
+

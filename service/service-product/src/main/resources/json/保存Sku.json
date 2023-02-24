@@ -1,0 +1,33 @@
+{
+  "id":null,
+  "spuId":4,
+  "price":"1999",
+  "skuName":"小米3",
+  "weight":"1",
+  "skuDesc":"小米3",
+  "category3Id":61,
+  "skuAttrValueList":[
+    {
+      "attrId":"1",
+      "valueId":"57"
+    }
+  ],
+  "skuSaleAttrValueList":[
+    {
+      "saleAttrValueId":"18",
+      "saleAttrValueName":"红色",
+      "baseSaleAttrId":"1",
+      "saleAttrName":"选择颜色"
+    }
+  ],
+  "skuImageList":[
+    {
+      "spuImgId":33,
+      "imgName":"list.jpg",
+      "imgUrl":"http://47.93.118.241/group1/M00/00/00/L1128V47i9GARYUWAADxtUrmGBA961.jpg",
+      "isDefault":0
+    }
+  ],
+  "skuDefaultImg":null,
+  "tmId":4
+}

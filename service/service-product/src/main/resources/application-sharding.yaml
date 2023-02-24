@@ -1,0 +1,42 @@
+spring:
+  shardingsphere:
+    datasource:
+      name: master,s1,s2
+      master:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.10.129:3306/gmall_product?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: 123456
+
+      s1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.10.129:3307/gmall_product?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: 123456
+
+      s2:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.10.129:3308/gmall_product?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: 123456
+
+
+
+    rules:
+      readwrite-splitting:
+        data-sources:
+          rw-ds:  #指定一个读写分离数据源的名字
+            type: Static
+            props:
+              write-data-source-name: master #写源的名字
+              read-data-source-names: s1,s2 #读源
+
+        load-balancers: #负载均衡器名字
+          haha:
+            type: ROUND_ROBIN
+
+    props:
+      sql-show: true

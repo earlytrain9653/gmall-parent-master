@@ -1,0 +1,73 @@
+server:
+  port: 80
+
+spring:
+  cloud:
+    gateway:
+      routes:  #当网关接收到一个请求后  从上到下进行匹配  看哪个规则能够匹配到  顺序很重要
+        - id: product_route
+          uri: lb://service-product
+          predicates:
+            - Path=/admin/product/**
+
+        - id: user_route
+          uri: lb://service-user
+          predicates:
+            - Path=/api/user/**
+
+        - id: cart_route
+          uri: lb://service-cart
+          predicates:
+            - Path=/api/cart/**
+
+        - id: order_route
+          uri: lb://service-order
+          predicates:
+            - Path=/api/order/**
+
+        - id: pay_route
+          uri: lb://service-pay
+          predicates:
+            - Path=/api/payment/**
+
+        - id: seckill_route
+          uri: lb://service-seckill
+          predicates:
+            - Path=/api/activity/seckill/**
+
+
+#        - id: item_route
+#          uri: lb://service-item
+#          predicates:
+#            - Path=/incr
+
+        - id: webAll_route  #只要前面没有匹配到 最终都交给web-all
+          uri: lb://web-all
+          predicates:
+            - Host=gamll.com,**.gmall.com
+      globalcors: #跨域配置
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*" #允许所有来源
+            allowedMethods: "*" #允许所有方式 GET POST DELETE ....
+            allowedHeaders: "*"  #允许所有的请求头
+            #allowCredentials: true #允许所有的安全标志
+            allowCredentials: true #跨域携带Cookie
+
+
+app:
+  auth:
+    anyone-url:  #无需登录 所有人都可以访问的资源
+      - /img/**
+      - /js/**
+      - /css/**
+
+    deny-url:  #所有人 无论是登录还是没登录 都不能访问  这是内部路径 仅供rpc调用
+      - /api/inner/**
+
+    login-page: http://passport.gmall.com/login.html  #配置登录页地址
+
+    auth-url:  #必须登录 才有访问权限
+     - /**/auth/**
+     - /trade.html
+

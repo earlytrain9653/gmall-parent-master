@@ -1,0 +1,27 @@
+{
+  "id": null,
+  "attrName": "屏幕材质",
+  "category1Id": 0,
+  "category2Id": 0,
+  "category3Id": 0,
+  "attrValueList": [
+    {
+      "valueName": "lcd",
+      "edit": false
+    },
+    {
+      "valueName": "oled曲面屏",
+      "edit": false
+    },
+    {
+      "valueName": "oled屏",
+      "edit": false
+    },
+    {
+      "valueName": "未上市",
+      "edit": false
+    }
+  ],
+  "categoryId": 61,
+  "categoryLevel": 3
+}

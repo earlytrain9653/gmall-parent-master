@@ -1,0 +1,27 @@
+server:
+  port: 9000
+
+spring:
+  main:
+    allow-bean-definition-overriding: true  #允许Bean定义信息重写
+#  redis:
+#    host: 192.168.10.129
+#    port: 6379
+#    password: yl123@!
+
+  #去掉数据库的自动配置
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+app:
+  threadpool:
+    core-pool-size: 8
+    maximum-pool-size: 24
+    keep-alive-time: 5
+    work-queue-size: 3000
+
+#    config:
+#      service-product:
+#        connect-timeout: 1000
+#        read-timeout: 3000
+
