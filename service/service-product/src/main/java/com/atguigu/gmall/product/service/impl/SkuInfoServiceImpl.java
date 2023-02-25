@@ -65,7 +65,10 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         //1.把基本信息保存到 sku_info
         SkuInfo skuInfo = new SkuInfo();
         BeanUtils.copyProperties(vo,skuInfo);
-        save(skuInfo);
+        boolean save = save(skuInfo);
+        if (!save) {
+            log.debug("sku：{}基本信息保存失败", vo.toString());
+        }
         //获取skuId
         Long skuId = skuInfo.getId();
 
@@ -81,7 +84,10 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
                 })
                 .collect(Collectors.toList());
         //skuImage批量入库
-        skuImageService.saveBatch(imageList);
+        boolean b = skuImageService.saveBatch(imageList);
+        if (!b) {
+            log.debug("sku：{}图片信息保存失败", vo.toString());
+        }
 
         //3.平台属性
         List<SkuAttrValue> attrValueList = vo.getSkuAttrValueList().stream()

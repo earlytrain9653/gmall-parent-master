@@ -84,7 +84,8 @@ public class SPUController {
 
     /**
      * 保存spuInfo信息
-     * @param vo  自定义 vo 接前端的请求参数
+     * @param vo  前端传来模型固定则 自定义 vo 接前端的请求参数
+     *            前端传来的模型不固定，则可用map接收：map<String, Object> jsonMap
      * @return
      */
     @ApiOperation("保存Spu")

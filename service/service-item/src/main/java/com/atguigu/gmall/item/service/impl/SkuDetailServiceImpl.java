@@ -38,7 +38,6 @@ public class SkuDetailServiceImpl implements SkuDetailService {
     @Autowired
     ThreadPoolExecutor executor;
 
-
     @Autowired
     StringRedisTemplate redisTemplate;
 
@@ -309,6 +308,7 @@ public class SkuDetailServiceImpl implements SkuDetailService {
 
     //将远程调用的业务逻辑封装成方法
     public SkuDetailVo getSkuDetailVo(Long skuId){
+
         SkuDetailVo skuDetailVo = new SkuDetailVo();
 
         /**

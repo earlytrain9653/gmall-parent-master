@@ -53,7 +53,7 @@ public class ItemController {
         //5.所有销售属性集合
         model.addAttribute("valuesSkuJson",skuDetailVo.getValuesSkuJson());
 
-        //6销售属性集合
+        //6.销售属性集合
         model.addAttribute("spuSaleAttrList",skuDetailVo.getSpuSaleAttrList());
 
         //TODO 6.sku的规格；平台属性

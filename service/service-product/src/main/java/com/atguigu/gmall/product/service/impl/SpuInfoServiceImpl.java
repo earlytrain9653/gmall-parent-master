@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.gmall.product.entity.SpuInfo;
 import com.atguigu.gmall.product.service.SpuInfoService;
 import com.atguigu.gmall.product.mapper.SpuInfoMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
-* @author Administrator
-* @description 针对表【spu_info(商品表)】的数据库操作Service实现
-* @createDate 2022-11-29 11:42:45
-*/
+ * @author Administrator
+ * @description 针对表【spu_info(商品表)】的数据库操作Service实现
+ * @createDate 2022-11-29 11:42:45
+ */
+@Slf4j
 @Service
 public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoMapper, SpuInfo>
-    implements SpuInfoService{
+        implements SpuInfoService {
 
     @Autowired
     SpuSaleAttrService spuSaleAttrService;
@@ -45,6 +47,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoMapper, SpuInfo>
 
     /**
      * 获取spu分页列表
+     *
      * @param page
      * @param limit
      * @param category3Id
@@ -52,25 +55,29 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoMapper, SpuInfo>
      */
     @Override
     public Page<SpuInfo> getSpuInfoByC3Id(Long page, Long limit, Long category3Id) {
-        Page page1 = new Page(page,limit);
+        Page page1 = new Page(page, limit);
         QueryWrapper<SpuInfo> wrapper = new QueryWrapper<>();
-        wrapper.eq("category3_id",category3Id);
+        wrapper.eq("category3_id", category3Id);
         Page page2 = baseMapper.selectPage(page1, wrapper);
         return page2;
     }
 
     /**
      * 保存spu
+     *
      * @param vo
      */
     @Transactional
     @Override
     public void saveSpuInfoData(SpuSaveInfoVo vo) {
         SpuInfo spuInfo = new SpuInfo();
-        BeanUtils.copyProperties(vo,spuInfo);
+        BeanUtils.copyProperties(vo, spuInfo);
 
         //入库
-        save(spuInfo);
+        boolean save = save(spuInfo);
+        if (!save) {
+            log.debug("保存Spu: {} 失败", vo.toString());
+        }
 
         //获取spu存入数据库后的自增id
         Long spuId = spuInfo.getId();

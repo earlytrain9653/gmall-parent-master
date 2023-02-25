@@ -46,6 +46,7 @@
             <version>7.0.2</version>
         </dependency>
 
+        <!--可以自定义读取配置文件类-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
