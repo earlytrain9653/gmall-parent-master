@@ -67,7 +67,7 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
         BeanUtils.copyProperties(vo,skuInfo);
         boolean save = save(skuInfo);
         if (!save) {
-            log.debug("sku：{}基本信息保存失败", vo.toString());
+            log.debug("sku：{}基本信息保存失败", vo);
         }
         //获取skuId
         Long skuId = skuInfo.getId();
