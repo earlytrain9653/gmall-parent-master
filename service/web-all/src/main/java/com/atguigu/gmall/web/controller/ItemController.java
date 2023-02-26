@@ -28,6 +28,8 @@ public class ItemController {
 
     /**
      * 商品详情页
+     * 发请求到item详情服务，用feign远程调用查询商品详情页面controller；
+     * 详情服务远程调用商品服务请求返回详情页面数据
      * @param skuId
      * @return
      */
