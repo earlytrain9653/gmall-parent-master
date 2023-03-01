@@ -13,10 +13,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.HttpCookie;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -209,6 +206,12 @@ public class UserAuthGatewayFilter implements GlobalFilter {
         loginPage += "?originUrl=" + uri;
         //2.设置响应头  Location：新位置
         response.getHeaders().set("Location",loginPage);
+        //防止前台使用假cookie一直重定向，将假cookie删除
+        ResponseCookie cookie = ResponseCookie.from("token", "1")
+                .domain("gmall.com")
+                .maxAge(0)
+                .build();
+        response.addCookie(cookie);
         //响应结束  返回
         return response.setComplete();
     }

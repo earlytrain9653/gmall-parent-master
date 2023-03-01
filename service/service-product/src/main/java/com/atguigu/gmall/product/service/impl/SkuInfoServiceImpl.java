@@ -5,6 +5,7 @@ import com.atguigu.gmall.product.service.*;
 import com.atguigu.gmall.product.vo.CategoryTreeVo;
 import com.atguigu.gmall.search.SearchAttr;
 import com.atguigu.gmall.starter.cache.service.CacheService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import java.util.Date;
 
@@ -117,6 +118,8 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo>
 
     /**
      * 商品上架
+     * 1、调用数据库，修改商品状态为上架
+     * 2、远程调用搜索服务，将商品加入ES中
      * @param skuId
      */
     @Override
