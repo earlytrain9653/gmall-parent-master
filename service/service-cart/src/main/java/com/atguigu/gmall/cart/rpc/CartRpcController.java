@@ -24,7 +24,6 @@ public class CartRpcController {
     @Autowired
     CartInfoService cartInfoService;
 
-
     /**
      * 把商品添加到购物车
      * @param skuId
@@ -52,7 +51,9 @@ public class CartRpcController {
     @DeleteMapping("/deleteChecked")
     public Result deleteChecked(){
 
+        //找到要删除的购物车
         String cartKey = cartInfoService.determinCartKey();
+        //删除选中的商品
         cartInfoService.deleteChecked(cartKey);
         return Result.ok();
     }

@@ -52,6 +52,12 @@ public class CartApiController {
     }
 
 
+    /**
+     * 购物车中该商品选中状态
+     * @param skuId
+     * @param isChecked 是否被选中
+     * @return
+     */
     @GetMapping("/checkCart/{skuId}/{isChecked}")
     public Result checkCart(@PathVariable("skuId") Long skuId,
                             @PathVariable("isChecked") Integer isChecked){

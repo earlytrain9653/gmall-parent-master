@@ -169,6 +169,11 @@ public class CartInfoServiceImpl implements CartInfoService {
         return cartInfos;
     }
 
+    /**
+     * 查询实时价格
+     * @param cartKey
+     * @param cartInfos
+     */
     private void syncPrice(String cartKey, List<CartInfo> cartInfos) {
         cartInfos
                 .stream()
@@ -275,7 +280,7 @@ public class CartInfoServiceImpl implements CartInfoService {
         String tempCartKey = getCustomCartKey("TempId");
         //得到用户购物车的key
         String userCartKey = getCustomCartKey("UserId");
-        //用户没登录 直接返货临时购物车的所有数据
+        //用户没登录 直接返回临时购物车的所有数据
         if (userCartKey == null){
 
             //给临时购物车设置过期时间
@@ -326,7 +331,7 @@ public class CartInfoServiceImpl implements CartInfoService {
     }
 
     /**
-     * 保存商品到
+     * 保存购物车
      * @param cartKey
      * @param cartInfo
      */
