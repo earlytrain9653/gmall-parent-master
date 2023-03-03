@@ -36,6 +36,7 @@ import com.atguigu.gmall.user.entity.UserAddress;
 
 import com.atguigu.gmall.order.biz.OrderBizService;
 import com.atguigu.gmall.order.vo.OrderConfirmRespVo;
+import com.sun.xml.internal.bind.v2.TODO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -84,10 +85,11 @@ public class OrderBizServiceImpl implements OrderBizService {
     public OrderConfirmRespVo getConfirmData() {
         OrderConfirmRespVo respVo = new OrderConfirmRespVo();
         //1.商品列表
-        //远程找公务车要到所有选中的商品
+        //远程找购物车要到所有选中的商品
         List<CartInfo> data = cartFeignClient.getChecked().getData();
         List<OrderConfirmRespVo.SkuDetail> detailList = data.stream()
                 .map((item) -> {
+                    //商品列表
                     OrderConfirmRespVo.SkuDetail skuDetail = new OrderConfirmRespVo.SkuDetail();
                     skuDetail.setSkuId(item.getSkuId());
                     skuDetail.setImgUrl(item.getImgUrl());
@@ -130,7 +132,7 @@ public class OrderBizServiceImpl implements OrderBizService {
     }
 
     /**
-     * 下单
+     * 提交订单
      * @param submitVo
      * @param tradeNo
      * @return
@@ -167,17 +169,19 @@ public class OrderBizServiceImpl implements OrderBizService {
         }
 
         //3.校验价格
+        //获取改变价格的商品信息列表
         List<OrderSubmitVo.OrderDetailListDTO> priceChangeSkus = submitVo.getOrderDetailList()
                 .stream()
                 .filter((item) -> {
                     BigDecimal orderPrice = item.getOrderPrice();
+                    //获取实时价格
                     BigDecimal price = skuDetailFeignClient.getPrice(item.getSkuId()).getData();
                     return Math.abs(orderPrice.subtract(price).doubleValue()) >= 0.00001;
-                }).collect(Collectors.toList());
+                }).collect(Collectors.toList());//得到价格变化的商品
         if (priceChangeSkus != null && priceChangeSkus.size() > 0){
             String skuNames = priceChangeSkus.stream().map(OrderSubmitVo.OrderDetailListDTO::getSkuName)
                     .reduce((o1, o2) -> o1 + ";" + o2)
-                    .get();
+                    .get();//价格改变的商品名
 
             GmallException gmallException = new GmallException(skuNames + "; 价格变话，请刷新页面重新确认",
                     ResultCodeEnum.PRICE_CHANGE.getCode());
@@ -497,7 +501,7 @@ public class OrderBizServiceImpl implements OrderBizService {
         orderInfo.setDeliveryAddress(submitVo.getDeliveryAddress());
         orderInfo.setOrderComment(submitVo.getOrderComment());
 
-        //订单总额
+        //计算订单总额
         BigDecimal totalAmount = submitVo.getOrderDetailList()
                 .stream()
                 .map(item -> item.getOrderPrice().multiply(new BigDecimal(item.getSkuNum())))
@@ -531,16 +535,22 @@ public class OrderBizServiceImpl implements OrderBizService {
         //处理状态
         orderInfo.setProcessStatus(ProcessStatus.UNPAID.name());
 
+        //物流单编号
         orderInfo.setTrackingNo("");
+        //父订单编号
         orderInfo.setParentOrderId(null);
 
+        //图片路径
         String imgUrl = submitVo.getOrderDetailList().get(0).getImgUrl();
         orderInfo.setImgUrl(imgUrl);
 
-
+        //省id
         orderInfo.setProvinceId(0L);
+        //操作时间
         orderInfo.setOperateTime(new Date());
+        //促销金额
         orderInfo.setActivityReduceAmount(new BigDecimal("0"));
+        //优惠券金额
         orderInfo.setCouponAmount(new BigDecimal("0"));
 
         //原价总额

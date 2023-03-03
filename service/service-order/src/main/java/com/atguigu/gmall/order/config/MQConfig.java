@@ -35,6 +35,7 @@ public class MQConfig {
         return new Queue(MqConst.ORDER_DELAY_QUEUE,true,false,false,arguments);
     }
 
+    //订单到延时队列的键
     @Bean
     public Binding delayBinding(){
         return new Binding(MqConst.ORDER_DELAY_QUEUE,
@@ -49,6 +50,7 @@ public class MQConfig {
         return new Queue(MqConst.ORDER_DEAD_QUEUE,true,false,false,null);
     }
 
+    //延时队列到死信队列的键
     @Bean
     public Binding deadBinding(){
         return new Binding(MqConst.ORDER_DEAD_QUEUE,

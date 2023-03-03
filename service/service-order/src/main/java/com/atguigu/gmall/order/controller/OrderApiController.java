@@ -42,7 +42,7 @@ public class OrderApiController {
 
         //下单方法
         Long orderId = orderBizService.submitOrder(submitVo,tradeNo);
-
+        //订单id由雪花算法生成，返回前端时返回字符串
         return Result.ok(orderId + "");
     }
 
