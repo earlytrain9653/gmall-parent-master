@@ -24,7 +24,11 @@ public class SeckillController {
     @Autowired
     SeckillFeignClient seckillFeignClient;
 
-
+    /**
+     * 进入秒杀商品页面
+     * @param model
+     * @return
+     */
     @GetMapping("/seckill.html")
     public String seckillPage(Model model){
 

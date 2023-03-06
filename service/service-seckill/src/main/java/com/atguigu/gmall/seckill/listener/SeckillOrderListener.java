@@ -40,6 +40,12 @@ public class SeckillOrderListener {
     @Autowired
     MQService mqService;
 
+    /**
+     * 监听秒杀排队订单，判断秒杀状态，做出反应
+     * @param message
+     * @param channel
+     * @throws IOException
+     */
     @RabbitListener(bindings = {
             @QueueBinding(
                     value = @Queue(value = MqConst.SECKILL_ORDER_QUEUE,durable = "true",
@@ -64,7 +70,7 @@ public class SeckillOrderListener {
             seckillGoodsService.saveSeckillOrder(msg);
             //如果秒杀成功  除了扣库存 redis中还有临时的订单数据
 
-            //4.跟新Redis中的库存标识
+            //4.更新Redis中的库存标识
             seckillGoodsService.updateRedisStock(msg);
             channel.basicAck(tag,false);
         }catch (Exception e){
