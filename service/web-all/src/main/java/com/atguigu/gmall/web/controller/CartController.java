@@ -32,7 +32,7 @@ public class CartController {
     //public static final Map<Thread,HttpServletRequest> requestMap = new ConcurrentHashMap<>();
 
     /**
-     * 把商品添加到购物车
+     * 把商品添加到购物车，并跳转到添加成功页面
      * @return
      */
     @GetMapping("/addCart.html")

@@ -1,4 +1,5 @@
 package com.atguigu.gmall.cart.service.impl;
+
 import java.util.Date;
 import java.math.BigDecimal;
 import java.util.List;
@@ -52,7 +53,8 @@ public class CartInfoServiceImpl implements CartInfoService {
     ThreadPoolExecutor threadPoolExecutor;
 
     /**
-     * 添加购物车
+     * 添加购物车，返回添加成功页面
+     *
      * @param skuId
      * @param num
      * @return
@@ -64,7 +66,7 @@ public class CartInfoServiceImpl implements CartInfoService {
         String cartKey = determinCartKey();
 
         //2.给购物车中添加商品
-        SkuInfo skuInfo = addCartItem(cartKey,skuId,num);
+        SkuInfo skuInfo = addCartItem(cartKey, skuId, num);
 
         //3.返回前端需要的数据
         AddCartSuccessVo cartSuccessVo = new AddCartSuccessVo();
@@ -77,6 +79,7 @@ public class CartInfoServiceImpl implements CartInfoService {
 
     /**
      * 给购车中添加商品
+     *
      * @param cartKey
      * @param skuId
      * @param num
@@ -91,21 +94,21 @@ public class CartInfoServiceImpl implements CartInfoService {
             //1.1有 修改数量
             String json = cart.get(skuId.toString());
             //获取到原来的购物车信息
-            CartInfo cartInfo = getCartInfo(cartKey,skuId);
+            CartInfo cartInfo = getCartInfo(cartKey, skuId);
             //原来的数量加上新加入的数量
             cartInfo.setSkuNum(cartInfo.getSkuNum() + num);
             //修改购物车中的实时价格
             BigDecimal price = productSkuDetailFeignClient.getPrice(skuId).getData();
             cartInfo.setSkuPrice(price);
             //保存到Redis
-            cart.put(skuId.toString(),JSON.toJSONString(cartInfo));
+            cart.put(skuId.toString(), JSON.toJSONString(cartInfo));
             SkuInfo skuInfo = convertCartInfo2SkuInfo(cartInfo);
             result = skuInfo;
-        }else{
+        } else {
             //1.2没有  新增
             Result<SkuInfo> skuInfo = productSkuDetailFeignClient.getSkuInfo(skuId);
             //保存到购物车
-            CartInfo cartInfo = convertSkuInfo2CartInfo(skuInfo.getData(),num);
+            CartInfo cartInfo = convertSkuInfo2CartInfo(skuInfo.getData(), num);
             cart.put(skuId.toString(), JSON.toJSONString(cartInfo));
             result = skuInfo.getData();
         }
@@ -115,6 +118,7 @@ public class CartInfoServiceImpl implements CartInfoService {
 
     /**
      * 将CartIntem转换成SkuInfo
+     *
      * @param cartInfo
      * @return
      */
@@ -129,6 +133,7 @@ public class CartInfoServiceImpl implements CartInfoService {
 
     /**
      * 从指定购物车中得到一个商品信息
+     *
      * @param cartKey
      * @param skuId
      * @return
@@ -136,7 +141,7 @@ public class CartInfoServiceImpl implements CartInfoService {
     public CartInfo getCartInfo(String cartKey, Long skuId) {
         //从Redis拿到这个商品
         String json = redisTemplate.opsForHash().get(cartKey, skuId.toString()).toString();
-        if (!StringUtils.isEmpty(json)){
+        if (!StringUtils.isEmpty(json)) {
             CartInfo cartInfo = JSON.parseObject(json, CartInfo.class);
             return cartInfo;
         }
@@ -145,6 +150,7 @@ public class CartInfoServiceImpl implements CartInfoService {
 
     /**
      * 返回购物车中所有商品的列表
+     *
      * @param cartKey
      * @return
      */
@@ -156,21 +162,22 @@ public class CartInfoServiceImpl implements CartInfoService {
         //拿到购物车中的所有值 key不用管
         //数据需要按照商品加入购物车的时间有序排列  最后一个加入购物车在最上面显示
         List<CartInfo> cartInfos = cart.values().stream().map((str) -> {
-            CartInfo cartInfo = JSON.parseObject(str, CartInfo.class);
-            return cartInfo;
-        }).sorted((o1,o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()))
+                    CartInfo cartInfo = JSON.parseObject(str, CartInfo.class);
+                    return cartInfo;
+                }).sorted((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()))
                 .collect(Collectors.toList());
 
         //同步最新价格
         CompletableFuture.runAsync(() -> {
             syncPrice(cartKey, cartInfos);
-        },threadPoolExecutor);
+        }, threadPoolExecutor);
 
         return cartInfos;
     }
 
     /**
      * 查询实时价格
+     *
      * @param cartKey
      * @param cartInfos
      */
@@ -178,19 +185,20 @@ public class CartInfoServiceImpl implements CartInfoService {
         cartInfos
                 .stream()
                 .forEach((item) -> {
-            //查询价格
-            BigDecimal realPrice = productSkuDetailFeignClient.getPrice(item.getSkuId()).getData();
-            if (Math.abs(item.getSkuPrice().doubleValue() - realPrice.doubleValue()) >= 0.00001) {
-                //价格发生了变化
-                item.setSkuPrice(realPrice);
-                save(cartKey,item);
-            }
-        });
+                    //查询价格
+                    BigDecimal realPrice = productSkuDetailFeignClient.getPrice(item.getSkuId()).getData();
+                    if (Math.abs(item.getSkuPrice().doubleValue() - realPrice.doubleValue()) >= 0.00001) {
+                        //价格发生了变化
+                        item.setSkuPrice(realPrice);
+                        save(cartKey, item);
+                    }
+                });
     }
 
 
     /**
      * 修改购物车商品数量
+     *
      * @param cartKey
      * @param skuId
      * @param num
@@ -198,47 +206,50 @@ public class CartInfoServiceImpl implements CartInfoService {
     @Override
     public void addToCartList(String cartKey, Long skuId, Integer num) {
         CartInfo cartInfo = getCartInfo(cartKey, skuId);
-        if (num == 1 || num == -1){
+        if (num == 1 || num == -1) {
             Integer skuNum = cartInfo.getSkuNum();
             skuNum = skuNum + num;
             cartInfo.setSkuNum(skuNum);
-            save(cartKey,cartInfo);
-        }else{
+            save(cartKey, cartInfo);
+        } else {
             //直接修改数量
             cartInfo.setSkuNum(num);
-            save(cartKey,cartInfo);
+            save(cartKey, cartInfo);
         }
 
     }
 
     /**
      * 修改选中状态  0：未选中  1：选中
+     *
      * @param cartKey
      * @param skuId
      * @param isChecked
      */
     @Override
     public void checkCart(String cartKey, Long skuId, Integer isChecked) {
-        if (!(isChecked == 0 || isChecked == 1)){
+        if (!(isChecked == 0 || isChecked == 1)) {
             throw new GmallException(ResultCodeEnum.INVALID_PARAM);
         }
         CartInfo cartInfo = getCartInfo(cartKey, skuId);
         cartInfo.setIsChecked(isChecked);
-        save(cartKey,cartInfo);
+        save(cartKey, cartInfo);
     }
 
     /**
      * 删除购物车中的某个商品
+     *
      * @param cartKey
      * @param skuId
      */
     @Override
     public void delete(String cartKey, Long skuId) {
-        redisTemplate.opsForHash().delete(cartKey,skuId.toString());
+        redisTemplate.opsForHash().delete(cartKey, skuId.toString());
     }
 
     /**
      * 删除购物车中选中的商品
+     *
      * @param cartKey
      */
     @Override
@@ -246,10 +257,10 @@ public class CartInfoServiceImpl implements CartInfoService {
         List<CartInfo> checked = getChecked(cartKey);
 
         List<Long> checkedIds = checked
-                                .stream()
-                                .map((item) -> item.getSkuId())
-                                .collect(Collectors.toList());
-        redisTemplate.opsForHash().delete(cartKey,checkedIds.toArray());
+                .stream()
+                .map((item) -> item.getSkuId())
+                .collect(Collectors.toList());
+        redisTemplate.opsForHash().delete(cartKey, checkedIds.toArray());
     }
 
     @Override
@@ -270,6 +281,7 @@ public class CartInfoServiceImpl implements CartInfoService {
 
     /**
      * 专供购物车列表使用  展示购物车中所有商品
+     *
      * @return
      */
     @Override
@@ -281,12 +293,12 @@ public class CartInfoServiceImpl implements CartInfoService {
         //得到用户购物车的key
         String userCartKey = getCustomCartKey("UserId");
         //用户没登录 直接返回临时购物车的所有数据
-        if (userCartKey == null){
+        if (userCartKey == null) {
 
             //给临时购物车设置过期时间
             Long expire = redisTemplate.getExpire(tempCartKey);
             if (expire < 0) {
-                redisTemplate.expire(tempCartKey,365, TimeUnit.DAYS);
+                redisTemplate.expire(tempCartKey, 365, TimeUnit.DAYS);
             }
             //redisTemplate.expire(tempCartKey,365, TimeUnit.DAYS);  //这样设置过期时间  会自动续期
 
@@ -297,17 +309,17 @@ public class CartInfoServiceImpl implements CartInfoService {
         //如果用户登录 判断是否需要合并
         try {
             Long tempSize = redisTemplate.opsForHash().size(tempCartKey);
-            if (tempSize > 0){
+            if (tempSize > 0) {
                 //合并：把临时购物车的每一个商品拿出来放到用户购物车
                 List<CartInfo> tempItems = getCartInfoList(tempCartKey);
                 for (CartInfo tempItem : tempItems) {
-                    addCartItem(userCartKey,tempItem.getSkuId(),tempItem.getSkuNum());
+                    addCartItem(userCartKey, tempItem.getSkuId(), tempItem.getSkuNum());
                 }
                 //合并结束  删除临时购物车
                 redisTemplate.delete(tempCartKey);
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             //说明合并期间出错  为了展示依然能进行  必须处理调异常
         }
 
@@ -318,12 +330,13 @@ public class CartInfoServiceImpl implements CartInfoService {
 
     /**
      * 根据传入的标识  获取相应的key
+     *
      * @param flag
      */
     private String getCustomCartKey(String flag) {
         HttpServletRequest request = UserAuthUtils.request();
         String header = request.getHeader(flag);
-        if (StringUtils.isEmpty(header)){
+        if (StringUtils.isEmpty(header)) {
             return null;
         }
 
@@ -331,7 +344,8 @@ public class CartInfoServiceImpl implements CartInfoService {
     }
 
     /**
-     * 保存购物车
+     * 修改保存购物车
+     * 主要做数量的验证
      * @param cartKey
      * @param cartInfo
      */
@@ -343,12 +357,12 @@ public class CartInfoServiceImpl implements CartInfoService {
         }
 
         BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(cartKey);
-        hashOps.put(cartInfo.getSkuId().toString(),JSON.toJSONString(cartInfo));
+        hashOps.put(cartInfo.getSkuId().toString(), JSON.toJSONString(cartInfo));
 
         //购物车总商品量不超过200
         Long size = redisTemplate.opsForHash().size(cartKey);
-        if (size >= 200){
-            redisTemplate.opsForHash().delete(cartKey,cartInfo.getSkuId().toString());
+        if (size >= 200) {
+            redisTemplate.opsForHash().delete(cartKey, cartInfo.getSkuId().toString());
             throw new GmallException(ResultCodeEnum.CART_ITEM_COUNT_OVERFLOW);
         }
 
@@ -356,10 +370,11 @@ public class CartInfoServiceImpl implements CartInfoService {
 
     /**
      * 将skuInfo 转换成 CartInfo
+     *
      * @param skuInfo
      * @return
      */
-    private CartInfo convertSkuInfo2CartInfo(SkuInfo skuInfo,Integer num) {
+    private CartInfo convertSkuInfo2CartInfo(SkuInfo skuInfo, Integer num) {
         UserAuthInfoVo userAuthInfo = UserAuthUtils.getUserAuthInfo();
         Long userId = userAuthInfo.getUserId();
         CartInfo cartInfo = new CartInfo();
@@ -378,6 +393,7 @@ public class CartInfoServiceImpl implements CartInfoService {
 
     /**
      * 决定购物车用哪个键
+     *
      * @return
      */
     public String determinCartKey() {
@@ -386,19 +402,20 @@ public class CartInfoServiceImpl implements CartInfoService {
         String tempId = userAuthInfo.getTempId();
         Long userId = userAuthInfo.getUserId();
         String cartKey = RedisConst.CART_INFO;
-        if (userId != null){
+        if (userId != null) {
             return cartKey = cartKey + userId;
-        }else {
+        } else {
             return cartKey = cartKey + tempId;
         }
     }
 
     /**
      * 获取当前购物车
+     *
      * @param cartKey
      * @return
      */
-    private BoundHashOperations<String,String,String> getCart(String cartKey){
+    private BoundHashOperations<String, String, String> getCart(String cartKey) {
         BoundHashOperations<String, String, String> cart = redisTemplate.boundHashOps(cartKey);
         return cart;
     }

@@ -35,7 +35,12 @@ public class OrderApiController {
         return splitReps;
     }
 
-
+    /**
+     * 提交订单
+     * @param tradeNo
+     * @param submitVo
+     * @return
+     */
     @PostMapping("/auth/submitOrder")
     public Result submitOrder(@RequestParam("tradeNo") String tradeNo,
                               @Valid @RequestBody OrderSubmitVo submitVo){

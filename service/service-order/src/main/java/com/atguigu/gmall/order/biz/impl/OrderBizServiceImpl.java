@@ -294,7 +294,7 @@ public class OrderBizServiceImpl implements OrderBizService {
             msg.setId(info.getId());
             msg.setUserId(info.getUserId());
             //给等待物流配送的订单队列发送消息
-            mqService.send(info,MqConst.ORDER_EVENT_EXCHANGE,MqConst.ORDER_LOGISTIC_RK);
+            mqService.send(msg,MqConst.ORDER_EVENT_EXCHANGE,MqConst.ORDER_LOGISTIC_RK);
         }
 
     }

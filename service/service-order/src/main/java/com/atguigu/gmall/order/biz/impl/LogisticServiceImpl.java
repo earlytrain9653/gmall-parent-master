@@ -1,4 +1,5 @@
 package com.atguigu.gmall.order.biz.impl;
+
 import java.math.BigDecimal;
 
 import com.atguigu.gmall.enums.OrderStatus;
@@ -47,20 +48,21 @@ public class LogisticServiceImpl implements LogisticService {
 
 
     //用户ID，快递鸟提供，注意保管，不要泄漏
-    private String EBusinessID="test1785796";//即用户ID，登录快递鸟官网会员中心获取 https://www.kdniao.com/UserCenter/v4/UserHome.aspx
+    private String EBusinessID = "test1785796";//即用户ID，登录快递鸟官网会员中心获取 https://www.kdniao.com/UserCenter/v4/UserHome.aspx
     //API key，快递鸟提供，注意保管，不要泄漏
-    private String ApiKey="321dd752-bbc0-4d2c-8f14-9a1e9f2690d9";//即API key，登录快递鸟官网会员中心获取 https://www.kdniao.com/UserCenter/v4/UserHome.aspx
+    private String ApiKey = "321dd752-bbc0-4d2c-8f14-9a1e9f2690d9";//即API key，登录快递鸟官网会员中心获取 https://www.kdniao.com/UserCenter/v4/UserHome.aspx
     //请求url, 正式环境地址
-    private String ReqURL="http://sandboxapi.kdniao.com:8080/kdniaosandbox/gateway/exterfaceInvoke.json";
+    private String ReqURL = "http://sandboxapi.kdniao.com:8080/kdniaosandbox/gateway/exterfaceInvoke.json";
 
     /**
      * 给系统指定的订单生成电子面单
+     *
      * @param orderId
      * @param userId
      * @return
      */
     @Override
-    public JSONObject generateEOrder(Long orderId, Long userId) throws Exception{
+    public JSONObject generateEOrder(Long orderId, Long userId) throws Exception {
 //
 //        // 组装应用级参数
 //        EOrderRequestData data = new EOrderRequestData();
@@ -130,72 +132,72 @@ public class LogisticServiceImpl implements LogisticService {
 //        //组装应用及参数
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        String RequestData = objectMapper.writeValueAsString(data);
-        // 组装系统级参数
 
-        String RequestData= "{"+
-                "'OrderCode': '"+orderId+"',"+
-                "'ShipperCode': 'YTO',"+
-                "'CustomerName': '客户编码',"+
-                "'CustomerPwd': '',"+
-                "'MonthCode': '密钥',"+
-                "'SendSite': '',"+
-                "'PayType': 1,"+
-                "'MonthCode': '1234567890',"+
-                "'ExpType': 1,"+
-                "'Cost': 0.0,"+
-                "'OtherCost': 0.0,"+
-                "'Sender': {"+
-                "'Company': '尚品汇',"+
-                "'Name': '尚品汇',"+
-                "'Mobile': '15018442396',"+
-                "'ProvinceName': '上海',"+
-                "'CityName': '上海市',"+
-                "'ExpAreaName': '青浦区',"+
-                "'Address': '明珠路'"+
-                "},"+
-                "'Receiver': {"+
-                "'Company': 'GCCUI',"+
-                "'Name': '"+info.getConsignee()+"',"+
-                "'Mobile': '"+info.getConsigneeTel()+"',"+
-                "'ProvinceName': '北京',"+
-                "'CityName': '北京市',"+
-                "'ExpAreaName': '大兴区',"+
-                "'Address': '"+info.getDeliveryAddress()+"'"+
-                "},"+
-                "'Commodity': ["+
-                "{"+
-                "'GoodsName': '鞋子',"+
-                "'Goodsquantity': 1,"+
-                "'GoodsWeight': 1.0"+
-                "},"+
-                "{"+
-                "'GoodsName': '衣服',"+
-                "'Goodsquantity': 1,"+
-                "'GoodsWeight': 1.0"+
-                "}"+
-                "],"+
-                "'AddService': ["+
-                "{"+
-                "'Name': 'INSURE',"+
-                "'Value': '1000'"+
-                "},"+
-                "],"+
-                "'Weight': 1.0,"+
-                "'Quantity': 1,"+
-                "'Volume': 0.0,"+
-                "'IsReturnPrintTemplate':1,"+
-                "'Remark': '小心轻放'"+
+        // 组装系统级参数
+        String RequestData = "{" +
+                "'OrderCode': '" + orderId + "'," +
+                "'ShipperCode': 'YTO'," +
+                "'CustomerName': '客户编码'," +
+                "'CustomerPwd': ''," +
+                "'MonthCode': '密钥'," +
+                "'SendSite': ''," +
+                "'PayType': 1," +
+                "'MonthCode': '1234567890'," +
+                "'ExpType': 1," +
+                "'Cost': 0.0," +
+                "'OtherCost': 0.0," +
+                "'Sender': {" +
+                "'Company': '尚品汇'," +
+                "'Name': '尚品汇'," +
+                "'Mobile': '15018442396'," +
+                "'ProvinceName': '上海'," +
+                "'CityName': '上海市'," +
+                "'ExpAreaName': '青浦区'," +
+                "'Address': '明珠路'" +
+                "}," +
+                "'Receiver': {" +
+                "'Company': 'GCCUI'," +
+                "'Name': '" + info.getConsignee() + "'," +
+                "'Mobile': '" + info.getConsigneeTel() + "'," +
+                "'ProvinceName': '北京'," +
+                "'CityName': '北京市'," +
+                "'ExpAreaName': '大兴区'," +
+                "'Address': '" + info.getDeliveryAddress() + "'" +
+                "}," +
+                "'Commodity': [" +
+                "{" +
+                "'GoodsName': '鞋子'," +
+                "'Goodsquantity': 1," +
+                "'GoodsWeight': 1.0" +
+                "}," +
+                "{" +
+                "'GoodsName': '衣服'," +
+                "'Goodsquantity': 1," +
+                "'GoodsWeight': 1.0" +
+                "}" +
+                "]," +
+                "'AddService': [" +
+                "{" +
+                "'Name': 'INSURE'," +
+                "'Value': '1000'" +
+                "}," +
+                "]," +
+                "'Weight': 1.0," +
+                "'Quantity': 1," +
+                "'Volume': 0.0," +
+                "'IsReturnPrintTemplate':1," +
+                "'Remark': '小心轻放'" +
                 "}";
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("RequestData", urlEncoder(RequestData, "UTF-8"));
         params.put("EBusinessID", EBusinessID);
         params.put("RequestType", "1007");
-        String dataSign=encrypt(RequestData, ApiKey, "UTF-8");
+        String dataSign = encrypt(RequestData, ApiKey, "UTF-8");
         params.put("DataSign", urlEncoder(dataSign, "UTF-8"));
         params.put("DataType", "2");
         // 以form表单形式提交post请求，post请求体中包含了应用级参数和系统级参数
-        String result=sendPost(ReqURL, params);
+        String result = sendPost(ReqURL, params);
         JSONObject jsonObject = JSON.parseObject(result);
         //根据公司业务处理返回的信息......
         JSONObject order = (JSONObject) jsonObject.get("Order");
@@ -215,6 +217,7 @@ public class LogisticServiceImpl implements LogisticService {
      * MD5加密
      * str 内容
      * charset 编码方式
+     *
      * @throws Exception
      */
     @SuppressWarnings("unused")
@@ -237,15 +240,16 @@ public class LogisticServiceImpl implements LogisticService {
      * base64编码
      * str 内容
      * charset 编码方式
+     *
      * @throws UnsupportedEncodingException
      */
-    private String base64(String str, String charset) throws UnsupportedEncodingException{
+    private String base64(String str, String charset) throws UnsupportedEncodingException {
         String encoded = Base64.encode(str.getBytes(charset));
         return encoded;
     }
 
     @SuppressWarnings("unused")
-    private String urlEncoder(String str, String charset) throws UnsupportedEncodingException{
+    private String urlEncoder(String str, String charset) throws UnsupportedEncodingException {
         String result = URLEncoder.encode(str, charset);
         return result;
     }
@@ -255,14 +259,13 @@ public class LogisticServiceImpl implements LogisticService {
      * content 内容
      * keyValue ApiKey
      * charset 编码方式
-     * @throws UnsupportedEncodingException ,Exception
+     *
      * @return DataSign签名
+     * @throws UnsupportedEncodingException ,Exception
      */
     @SuppressWarnings("unused")
-    private String encrypt (String content, String keyValue, String charset) throws UnsupportedEncodingException, Exception
-    {
-        if (keyValue != null)
-        {
+    private String encrypt(String content, String keyValue, String charset) throws UnsupportedEncodingException, Exception {
+        if (keyValue != null) {
             return base64(MD5(content + keyValue, charset), charset);
         }
         return base64(MD5(content, charset), charset);
@@ -272,6 +275,7 @@ public class LogisticServiceImpl implements LogisticService {
      * 向指定 URL 发送POST方法的请求
      * url 发送请求的 URL
      * params 请求的参数集合
+     *
      * @return 远程资源的响应结果
      */
     @SuppressWarnings("unused")
@@ -281,7 +285,7 @@ public class LogisticServiceImpl implements LogisticService {
         StringBuilder result = new StringBuilder();
         try {
             URL realUrl = new URL(url);
-            HttpURLConnection conn =(HttpURLConnection) realUrl.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
             // 发送POST请求必须设置如下两行
             conn.setDoOutput(true);
             conn.setDoInput(true);
@@ -300,15 +304,15 @@ public class LogisticServiceImpl implements LogisticService {
             if (params != null) {
                 StringBuilder param = new StringBuilder();
                 for (Map.Entry<String, String> entry : params.entrySet()) {
-                    if(param.length()>0){
+                    if (param.length() > 0) {
                         param.append("&");
                     }
                     param.append(entry.getKey());
                     param.append("=");
                     param.append(entry.getValue());
-                    System.out.println(entry.getKey()+":"+entry.getValue());
+                    System.out.println(entry.getKey() + ":" + entry.getValue());
                 }
-                System.out.println("param:"+param.toString());
+                System.out.println("param:" + param.toString());
                 out.write(param.toString());
             }
             // flush输出流的缓冲
@@ -324,16 +328,15 @@ public class LogisticServiceImpl implements LogisticService {
             e.printStackTrace();
         }
         //使用finally块来关闭输出流、输入流
-        finally{
-            try{
-                if(out!=null){
+        finally {
+            try {
+                if (out != null) {
                     out.close();
                 }
-                if(in!=null){
+                if (in != null) {
                     in.close();
                 }
-            }
-            catch(IOException ex){
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }

@@ -28,18 +28,17 @@ public class MQService {
 
     private RabbitTemplate rabbitTemplate;
 
-    public MQService(RabbitTemplate rabbitTemplate,StringRedisTemplate redisTemplate){
+    public MQService(RabbitTemplate rabbitTemplate, StringRedisTemplate redisTemplate) {
         this.rabbitTemplate = rabbitTemplate;
         this.redisTemplate = redisTemplate;
         initTemplate();
     }
 
 
-    public void send(Object message,String exchange,String routingKey){
+    public void send(Object message, String exchange, String routingKey) {
         rabbitTemplate.setRetryTemplate(new RetryTemplate());
-        rabbitTemplate.convertAndSend(exchange,routingKey, JSON.toJSONString(message));
+        rabbitTemplate.convertAndSend(exchange, routingKey, JSON.toJSONString(message));
     }
-
 
 
     public void retry(Channel channel, long tag, String content, Integer retryCount) throws IOException {
@@ -47,28 +46,28 @@ public class MQService {
         String md5 = MD5.encrypt(content);
         //同一个消息最多重试5次
         Long increment = redisTemplate.opsForValue().increment("msg:count:" + md5);
-        if (increment <= retryCount){
-            channel.basicNack(tag,false,true);
-        }else {
+        if (increment <= retryCount) {
+            channel.basicNack(tag, false, true);
+        } else {
             redisTemplate.delete("msg:count:" + md5);
-            channel.basicAck(tag,false);
+            channel.basicAck(tag, false);
         }
     }
 
     private void initTemplate() {
         this.rabbitTemplate.setConfirmCallback((CorrelationData correlationData,
-                boolean ack,
-                String cause) -> {
-            log.info("confirm回调：data:{},ack:{},cause:{}",correlationData,ack,cause);
+                                                boolean ack,
+                                                String cause) -> {
+            log.info("confirm回调：data:{},ack:{},cause:{}", correlationData, ack, cause);
         });
 
         this.rabbitTemplate.setReturnCallback((Message message,
-                                                int replyCode,
-                                                String replyText,
-                                                String exchange,
-                                                String routingKey) -> {
+                                               int replyCode,
+                                               String replyText,
+                                               String exchange,
+                                               String routingKey) -> {
             log.info("return回调：message:{},replyCode:{},replyText:{},exchange:{} routingKey:{}",
-                    message,replyCode,replyText,exchange,routingKey);
+                    message, replyCode, replyText, exchange, routingKey);
         });
     }
 }
